@@ -25,9 +25,11 @@ put all necessary function data in options fields
 implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)
 and gradient-scheme adaptive restarting (O'Donoghue and Candes 2013)
 
-quits when norm(y(k) - x(k+1)) < EPS
+quits when:
+    
+    norm( y(k) - x(k+1) ) < EPS * max( 1,norm( x(k+1) )
 
-see examples/ for instances
+see examples/ for usage instances
 
 optional options fields defined are below (with defaults)
 to use defaults simply call apg with options = []
