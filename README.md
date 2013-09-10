@@ -12,9 +12,11 @@ where f is smooth, convex and h is non-smooth, convex but simple
 in that we can easily evaluate the proximal operator of h
 
 this takes in two function handles:
+
     f_grad(v,options) = df(v)/dv (gradient of f)
+    
     prox_h(v,t,options) = argmin_x (t*h(x) + 1/2 * norm(x-v)^2)
-         (where t is the step size at that iteration)
+    where t is the step size at that iteration
 
     if h = 0, then use prox_h = [] or prox_h = @(x,t,options)(x)
 
