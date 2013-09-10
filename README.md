@@ -17,10 +17,11 @@ call as:
 
 this takes in two function handles:
 
-    f_grad(v,options) = df(v)/dv (gradient of f)
+    f_grad(v,options) = df(v)/dv 
+    (gradient of f at v)
     
-    prox_h(v,t,options) = argmin_x (t*h(x) + 1/2 * norm(x-v)^2)
-    where t is the step size at that iteration
+    prox_h(v,t,options) = argmin_x ( t*h(x) + 1/2 * norm(x-v)^2 )
+    (where t is the step size at that iteration)
 
     if h = 0, then use prox_h = [] or prox_h = @(x,t,options)(x)
 
@@ -55,3 +56,28 @@ to use defaults simply call apg with options = []
     GEN_PLOTS = true; % generate plots of function and gradient values
 
     USE_GRA = false; % use unaccelerated proximal gradient descent
+
+Example of usge:
+
+    function x = apg_lasso(A, b, rho, options)
+        % uses apg to solve a lasso problem
+        %
+        % min_x (1/2)*sum_square(A*x - b) + rho * norm(x,1) 
+        %
+        % rho is the L1-regularization weight
+
+        options.A = A;
+        options.b = b;
+        options.rho = rho;
+
+        x = apg(@quad_grad, @soft_thresh, size(A,2), options);
+
+    end
+
+    function g = quad_grad(x, o)
+        g = o.A'*(o.A*x - o.b);
+    end
+
+    function v = soft_thresh(x, t, o)
+        v = sign(x) .* max(abs(x) - t*o.rho,0);
+    end
