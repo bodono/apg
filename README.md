@@ -11,6 +11,10 @@ solves:
 where f is smooth, convex and h is non-smooth, convex but simple
 in that we can easily evaluate the proximal operator of h
 
+call as:
+
+    x = apg( f_grad, prox_h, dim_x, options )
+
 this takes in two function handles:
 
     f_grad(v,options) = df(v)/dv (gradient of f)
