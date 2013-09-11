@@ -1,4 +1,4 @@
-function x = apg(f_grad, prox_h, dim_x, opts)
+function x = apg(grad_f, prox_h, dim_x, opts)
 %
 % apg v0.1b (@author bodonoghue)
 %
@@ -11,7 +11,7 @@ function x = apg(f_grad, prox_h, dim_x, opts)
 % in that we can easily evaluate the proximal operator of h
 %
 % this takes in two function handles:
-% f_grad(v,opts) = df(v)/dv (gradient of f)
+% grad_f(v,opts) = df(v)/dv (gradient of f)
 % prox_h(v,t,opts) = argmin_x (t*h(x) + 1/2 * norm(x-v)^2)
 %                       where t is the step size at that iteration
 % if h = 0, then use prox_h = [] or prox_h = @(x,t,opts)(x)
@@ -52,12 +52,12 @@ GEN_PLOTS = GEN_PLOTS & ~QUIET;
 if (GEN_PLOTS); errs = zeros(MAX_ITERS,2);end
 
 x = X_INIT; y=x;
-g = f_grad(y,opts);
+g = grad_f(y,opts);
 theta = 1;
 
 % perturbation for first step-size estimate:
 x_hat = x + ones(dim_x,1);
-t = norm(x - x_hat)/norm(g - f_grad(x_hat,opts));
+t = norm(x - x_hat)/norm(g - grad_f(x_hat,opts));
 
 for k=1:MAX_ITERS
     
@@ -101,7 +101,7 @@ for k=1:MAX_ITERS
     end
     
     g_old = g;
-    g = f_grad(y,opts);
+    g = grad_f(y,opts);
     
     % TFOCS-style backtracking:
     t_hat = 0.5*(norm(y-y_old)^2)/abs((y - y_old)'*(g_old - g));

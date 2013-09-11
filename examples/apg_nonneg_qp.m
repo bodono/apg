@@ -6,7 +6,7 @@ function x = apg_nonneg_qp(Q, q, opts)
 %
     opts.Q = Q;
     opts.q = q;
-    f_grad = @(x,opts)(opts.Q*x - opts.q);
+    grad_f = @(x,opts)(opts.Q*x - opts.q);
     prox_h = @(x,t,opts)(pos(x));
-    x = apg(f_grad, prox_h, size(q,1), opts);
+    x = apg(grad_f, prox_h, size(q,1), opts);
 end

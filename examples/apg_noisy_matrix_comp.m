@@ -8,11 +8,11 @@ function L = apg_noisy_matrix_comp(M, rho, opts)
 %   (the non-zero entries in this simple example)
     opts.M = M;
     opts.rho = rho;
-    l = apg(@f_grad, @svd_shrink, size(M,1)*size(M,2), opts);
+    l = apg(@grad_f, @svd_shrink, size(M,1)*size(M,2), opts);
     L = reshape(l,size(M));
 end
 
-function g = f_grad(x, opts)
+function g = grad_f(x, opts)
     L = reshape(x,size(opts.M));
     G = (L-opts.M).*(opts.M ~= 0);
     g = G(:);

@@ -1,6 +1,6 @@
 apg 
 =====================
-(@author bodonoghue) MATLAB script
+(@author bodonoghue) MATLAB script  
 Implements an Accelerated Proximal Gradient method
 (Nesterov 2007, Beck and Teboulle 2009)
 
@@ -9,16 +9,16 @@ solves:
     minimize f(x) + h(x)
     over x \in R^dim_x
 
-where f is smooth, convex and h is non-smooth, convex but simple
-in that we can easily evaluate the proximal operator of h
+where `f` is smooth, convex  
+`h` is convex with easy to evaluate proximal operator
 
 call as:
 
-    x = apg( f_grad, prox_h, dim_x, opts )
+    x = apg( grad_f, prox_h, dim_x, opts )
 
 this takes in two function handles:
 
-    f_grad(v,opts) = df(v)/dv 
+    grad_f(v,opts) = df(v)/dv 
     (gradient of f at v)
     
     prox_h(v,t,opts) = argmin_x ( t*h(x) + 1/2 * norm(x-v)^2 )
@@ -26,10 +26,12 @@ this takes in two function handles:
 
     if h = 0, then use prox_h = [] or prox_h = @(x,t,opts)(x)
 
-put all necessary function data in opts fields
+put all necessary function data in opts struct 
 
-implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)
-and gradient-scheme adaptive restarting (O'Donoghue and Candes 2013)
+each iteration evaluates one gradient of `f` and one prox step of `h`
+
+implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)  
+and gradient-scheme adaptive restarting [O'Donoghue and Candes 2013](http://bodonoghue.org/publications/adap_restart.pdf)
 
 quits when:
     
@@ -75,10 +77,10 @@ Example of usage:
 
     end
 
-    function g = quad_grad(x, o)
-        g = o.A'*(o.A*x - o.b);
+    function g = quad_grad(x, opts)
+        g = opts.A'*(opts.A*x - opts.b);
     end
 
-    function v = soft_thresh(x, t, o)
-        v = sign(x) .* max(abs(x) - t*o.rho,0);
+    function v = soft_thresh(x, t, opts)
+        v = sign(x) .* max(abs(x) - t*opts.rho,0);
     end
