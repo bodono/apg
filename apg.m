@@ -30,9 +30,9 @@ MAX_ITERS = 2000; % maximum iterations before termination
 EPS = 1e-6; % tolerance for termination
 ALPHA = 1.01; % step-size growth factor
 BETA = 0.5; % step-size shrinkage factor
-QUIET = false; % writes out iter number every 100 iters
-GEN_PLOTS = true; % generate plots of function and gradient values
-USE_GRA = false; % use unaccelerated proximal gradient descent
+QUIET = false; % if false writes out information every 100 iters
+GEN_PLOTS = true; % if true generates plots of proximal gradient
+USE_GRA = false; % if true uses unaccelerated proximal gradient descent
 
 if (~isempty(options))
     if isfield(options,'X_INIT');X_INIT = options.X_INIT;end
@@ -78,7 +78,7 @@ for k=1:MAX_ITERS
     err2 = norm(x-x_old)/max(1,norm(x));
     
     if (GEN_PLOTS);
-        errs(k,1) = err1; 
+        errs(k,1) = err1;
         errs(k,2) = err2;
     end
     

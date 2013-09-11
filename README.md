@@ -51,11 +51,11 @@ to use defaults simply call apg with options = []
 
     BETA = 0.5; % step-size shrinkage factor
 
-    QUIET = false; % writes out iter number every 100 iters
+    QUIET = false; % if false writes out information every 100 iters
 
-    GEN_PLOTS = true; % generate plots of function and gradient values
+    GEN_PLOTS = true; % if true generates plots of proximal gradient
 
-    USE_GRA = false; % use unaccelerated proximal gradient descent
+    USE_GRA = false; % if true uses unaccelerated proximal gradient descent
 
 Example of usage:
 

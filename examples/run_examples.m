@@ -22,3 +22,8 @@ x_qp = apg_nonneg_qp(Q, q, options);
 n = 1e3; d = 250; rho=0.1; x_n = -0.1*rand(d,1); x_p = 0.1*rand(d,1);
 X_p = 5*randn(d,n)+x_p*ones(1,n); X_n = 5*randn(d,n)+x_n*ones(1,n);
 x_lr = apg_log_reg(X_p,X_n,rho,options);
+
+%% noisy low-rank matrix completion
+n = 100; m = 50; r = 10; density = 0.2; rho = 5;
+M = randn(m,r)*randn(r,n); mask = sprand(m,n,density);
+X_mc = apg_noisy_matrix_comp(M.*(mask~=0), rho, options);
