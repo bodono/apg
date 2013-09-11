@@ -57,7 +57,7 @@ to use defaults simply call apg with options = []
 
     USE_GRA = false; % use unaccelerated proximal gradient descent
 
-Example of usge:
+Example of usage:
 
     function x = apg_lasso(A, b, rho, options)
         % uses apg to solve a lasso problem

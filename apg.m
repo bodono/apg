@@ -46,6 +46,9 @@ if (~isempty(options))
     if isfield(options,'USE_GRA');USE_GRA = options.USE_GRA;end
 end
 
+% if quiet don't generate plots
+GEN_PLOTS = GEN_PLOTS & ~QUIET;
+
 if (GEN_PLOTS); errs = zeros(MAX_ITERS,2);end
 
 x = X_INIT; y=x;

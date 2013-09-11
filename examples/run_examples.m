@@ -6,8 +6,9 @@ addpath('..')
 
 %% set optional parameters:
 options = [];
+%options.QUIET = true;
+%options.GEN_PLOTS = false;
 %options.USE_RESTART = false;
-%options.USE_GRA = true;
 
 %% lasso:
 n = 1e3; m = 100; A = randn(m,n); b = randn(m,1); mu = 10;
