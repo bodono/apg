@@ -1,4 +1,4 @@
-apg v0.1b (@author bodonoghue)
+apg v0.1b (@author bodonoghue) MATLAB script
 
 Implements an Accelerated Proximal Gradient method
 (Nesterov 2007, Beck and Teboulle 2009)
