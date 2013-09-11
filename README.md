@@ -1,5 +1,6 @@
-apg v0.1b (@author bodonoghue) MATLAB script
-
+apg 
+=====================
+(@author bodonoghue) MATLAB script
 Implements an Accelerated Proximal Gradient method
 (Nesterov 2007, Beck and Teboulle 2009)
 
@@ -13,19 +14,19 @@ in that we can easily evaluate the proximal operator of h
 
 call as:
 
-    x = apg( f_grad, prox_h, dim_x, options )
+    x = apg( f_grad, prox_h, dim_x, opts )
 
 this takes in two function handles:
 
-    f_grad(v,options) = df(v)/dv 
+    f_grad(v,opts) = df(v)/dv 
     (gradient of f at v)
     
-    prox_h(v,t,options) = argmin_x ( t*h(x) + 1/2 * norm(x-v)^2 )
+    prox_h(v,t,opts) = argmin_x ( t*h(x) + 1/2 * norm(x-v)^2 )
     (where t is the step size at that iteration)
 
-    if h = 0, then use prox_h = [] or prox_h = @(x,t,options)(x)
+    if h = 0, then use prox_h = [] or prox_h = @(x,t,opts)(x)
 
-put all necessary function data in options fields
+put all necessary function data in opts fields
 
 implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)
 and gradient-scheme adaptive restarting (O'Donoghue and Candes 2013)
@@ -36,8 +37,8 @@ quits when:
 
 see examples/ for usage instances
 
-optional options fields defined are below (with defaults)
-to use defaults simply call apg with options = []
+optional opts fields defined are below (with defaults)
+to use defaults simply call apg with opts = []
 
     X_INIT = zeros(dim_x,1); % initial starting point
 
@@ -59,18 +60,18 @@ to use defaults simply call apg with options = []
 
 Example of usage:
 
-    function x = apg_lasso(A, b, rho, options)
+    function x = apg_lasso(A, b, rho, opts)
         % uses apg to solve a lasso problem
         %
         % min_x (1/2)*sum_square(A*x - b) + rho * norm(x,1) 
         %
         % rho is the L1-regularization weight
 
-        options.A = A;
-        options.b = b;
-        options.rho = rho;
+        opts.A = A;
+        opts.b = b;
+        opts.rho = rho;
 
-        x = apg(@quad_grad, @soft_thresh, size(A,2), options);
+        x = apg(@quad_grad, @soft_thresh, size(A,2), opts);
 
     end
 

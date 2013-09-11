@@ -1,4 +1,4 @@
-function x = apg(f_grad, prox_h, dim_x, options)
+function x = apg(f_grad, prox_h, dim_x, opts)
 %
 % apg v0.1b (@author bodonoghue)
 %
@@ -11,39 +11,39 @@ function x = apg(f_grad, prox_h, dim_x, options)
 % in that we can easily evaluate the proximal operator of h
 %
 % this takes in two function handles:
-% f_grad(v,options) = df(v)/dv (gradient of f)
-% prox_h(v,t,options) = argmin_x (t*h(x) + 1/2 * norm(x-v)^2)
+% f_grad(v,opts) = df(v)/dv (gradient of f)
+% prox_h(v,t,opts) = argmin_x (t*h(x) + 1/2 * norm(x-v)^2)
 %                       where t is the step size at that iteration
-% if h = 0, then use prox_h = [] or prox_h = @(x,t,options)(x)
-% put the necessary function data in options fields
+% if h = 0, then use prox_h = [] or prox_h = @(x,t,opts)(x)
+% put the necessary function data in opts fields
 %
 % implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)
 % and gradient-scheme adaptive restarting (O'Donoghue and Candes 2013)
 %
 % quits when norm(y(k) - x(k+1)) < EPS * max(1, norm(x(k+1))
 %
-% optional options fields defined are below (with defaults)
-% to use defaults simply call apg with options = []
+% optional opts fields defined are below (with defaults)
+% to use defaults simply call apg with opts = []
 X_INIT = zeros(dim_x,1); % initial starting point
 USE_RESTART = true; % use adaptive restart scheme
 MAX_ITERS = 2000; % maximum iterations before termination
 EPS = 1e-6; % tolerance for termination
-ALPHA = 1.01; % step-size growth factor
+ALPHA = 1.05; % step-size growth factor
 BETA = 0.5; % step-size shrinkage factor
 QUIET = false; % if false writes out information every 100 iters
 GEN_PLOTS = true; % if true generates plots of proximal gradient
 USE_GRA = false; % if true uses unaccelerated proximal gradient descent
 
-if (~isempty(options))
-    if isfield(options,'X_INIT');X_INIT = options.X_INIT;end
-    if isfield(options,'USE_RESTART');USE_RESTART = options.USE_RESTART;end
-    if isfield(options,'MAX_ITERS');MAX_ITERS = options.MAX_ITERS;end
-    if isfield(options,'EPS');EPS = options.EPS;end
-    if isfield(options,'ALPHA');ALPHA = options.ALPHA;end
-    if isfield(options,'BETA');BETA = options.BETA;end
-    if isfield(options,'QUIET');QUIET = options.QUIET;end
-    if isfield(options,'GEN_PLOTS');GEN_PLOTS = options.GEN_PLOTS;end
-    if isfield(options,'USE_GRA');USE_GRA = options.USE_GRA;end
+if (~isempty(opts))
+    if isfield(opts,'X_INIT');X_INIT = opts.X_INIT;end
+    if isfield(opts,'USE_RESTART');USE_RESTART = opts.USE_RESTART;end
+    if isfield(opts,'MAX_ITERS');MAX_ITERS = opts.MAX_ITERS;end
+    if isfield(opts,'EPS');EPS = opts.EPS;end
+    if isfield(opts,'ALPHA');ALPHA = opts.ALPHA;end
+    if isfield(opts,'BETA');BETA = opts.BETA;end
+    if isfield(opts,'QUIET');QUIET = opts.QUIET;end
+    if isfield(opts,'GEN_PLOTS');GEN_PLOTS = opts.GEN_PLOTS;end
+    if isfield(opts,'USE_GRA');USE_GRA = opts.USE_GRA;end
 end
 
 % if quiet don't generate plots
@@ -52,12 +52,12 @@ GEN_PLOTS = GEN_PLOTS & ~QUIET;
 if (GEN_PLOTS); errs = zeros(MAX_ITERS,2);end
 
 x = X_INIT; y=x;
-g = f_grad(y,options);
+g = f_grad(y,opts);
 theta = 1;
 
 % perturbation for first step-size estimate:
 x_hat = x + ones(dim_x,1);
-t = norm(x - x_hat)/norm(g - f_grad(x_hat,options));
+t = norm(x - x_hat)/norm(g - f_grad(x_hat,opts));
 
 for k=1:MAX_ITERS
     
@@ -71,7 +71,7 @@ for k=1:MAX_ITERS
     x = y - t*g;
     
     if ~isempty(prox_h)
-        x = prox_h(x,t,options);
+        x = prox_h(x,t,opts);
     end
     
     err1 = norm(y-x)/max(1,norm(x));
@@ -101,7 +101,7 @@ for k=1:MAX_ITERS
     end
     
     g_old = g;
-    g = f_grad(y,options);
+    g = f_grad(y,opts);
     
     % TFOCS-style backtracking:
     t_hat = 0.5*(norm(y-y_old)^2)/abs((y - y_old)'*(g_old - g));
@@ -116,8 +116,8 @@ if (GEN_PLOTS)
     errs = errs(1:k,:);
     figure();semilogy(errs(:,1));
     xlabel('iters');title('norm(tGk)')
-    figure();semilogy(errs(:,2));
-    xlabel('iters');title('norm(Dxk)')
+    %figure();semilogy(errs(:,2));
+    %xlabel('iters');title('norm(Dxk)')
 end
 
 end
