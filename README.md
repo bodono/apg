@@ -9,8 +9,8 @@ solves:
     minimize f(x) + h(x)
     over x \in R^dim_x
 
-where `f` is smooth, convex  
-`h` is convex with easy to evaluate proximal operator
+where `f` is smooth, convex - user supplies function to evaluate gradient of `f`  
+`h` is convex - user supplies function to evaluate the proximal operator of `h`
 
 call as:
 
@@ -18,29 +18,29 @@ call as:
 
 this takes in two function handles:
 
-    grad_f(v,opts) = df(v)/dv 
+    grad_f(v, opts) = df(v)/dv 
     (gradient of f at v)
     
-    prox_h(v,t,opts) = argmin_x ( t*h(x) + 1/2 * norm(x-v)^2 )
-    (where t is the step size at that iteration)
+    prox_h(v, t, opts) = argmin_x ( t * h(x) + 1/2 * norm(x-v)^2 )
+    where t is the (scalar, positive) step size at that iteration
 
     if h = 0, then use prox_h = [] or prox_h = @(x,t,opts)(x)
 
 put all necessary function data in opts struct 
 
-each iteration evaluates one gradient of `f` and one prox step of `h`
-
-implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)  
-and gradient-scheme adaptive restarting [O'Donoghue and Candes 2013](http://bodonoghue.org/publications/adap_restart.pdf)
+each iteration of `apg` requires one gradient evaluation of `f` and one prox step with `h`
 
 quits when:
     
     norm( y(k) - x(k+1) ) < EPS * max( 1,norm( x(k+1) )
 
+`apg` implements something similar to TFOCS step-size adaptation (Becker, Candes and Grant 2010)  
+and gradient-scheme adaptive restarting ([O'Donoghue and Candes 2013](http://bodonoghue.org/publications/adap_restart.pdf))
+
 see examples/ for usage instances
 
-optional opts fields defined are below (with defaults)
-to use defaults simply call apg with opts = []
+optional opts fields defined are below (with defaults)  
+to use defaults simply call apg with `opts = []`
 
     X_INIT = zeros(dim_x,1); % initial starting point
 

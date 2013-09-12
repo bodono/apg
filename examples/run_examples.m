@@ -4,10 +4,11 @@ addpath('..')
 
 %% set optional parameters:
 opts = [];
-%opts.QUIET = true;
-%opts.GEN_PLOTS = false;
-%opts.USE_RESTART = false;
-%opts.ALPHA = 1;
+% for example:
+% opts.QUIET = true;
+% opts.GEN_PLOTS = false;
+% opts.USE_RESTART = false;
+% opts.ALPHA = 1;
 
 %% lasso:
 fprintf('running lasso ex:\n');

@@ -56,9 +56,14 @@ g = grad_f(y,opts);
 theta = 1;
 
 % perturbation for first step-size estimate:
-x_hat = x + ones(dim_x,1);
-t = norm(x - x_hat)/norm(g - grad_f(x_hat,opts));
-
+T = 10; dx = T*ones(dim_x,1); g_hat = nan;
+while any(isnan(g_hat))
+    dx = dx/T;
+    x_hat = x + dx;
+    g_hat = grad_f(x_hat,opts);
+end
+t = norm(x - x_hat)/norm(g - g_hat);
+ 
 for k=1:MAX_ITERS
     
     if (~QUIET && mod(k,100)==0)
