@@ -1,4 +1,4 @@
-function x = apg(grad_f, prox_h, dim_x, opts)
+function [x, t] = apg(grad_f, prox_h, dim_x, opts)
 %
 % apg v0.1b (@author bodonoghue)
 %
@@ -9,6 +9,10 @@ function x = apg(grad_f, prox_h, dim_x, opts)
 %
 % where f is smooth, convex and h is non-smooth, convex but simple
 % in that we can easily evaluate the proximal operator of h
+%
+% returns solution and last-used step-size (the step-size is useful
+% if you're solving a similar problem many times serially, you can
+% initialize apg with the last use step-size
 %
 % this takes in two function handles:
 % grad_f(v,opts) = df(v)/dv (gradient of f)
@@ -33,6 +37,7 @@ BETA = 0.5; % step-size shrinkage factor
 QUIET = false; % if false writes out information every 100 iters
 GEN_PLOTS = true; % if true generates plots of proximal gradient
 USE_GRA = false; % if true uses unaccelerated proximal gradient descent
+STEP_SIZE = []; % starting step-size estimate, if not set apg makes estimate
 
 if (~isempty(opts))
     if isfield(opts,'X_INIT');X_INIT = opts.X_INIT;end
@@ -44,6 +49,7 @@ if (~isempty(opts))
     if isfield(opts,'QUIET');QUIET = opts.QUIET;end
     if isfield(opts,'GEN_PLOTS');GEN_PLOTS = opts.GEN_PLOTS;end
     if isfield(opts,'USE_GRA');USE_GRA = opts.USE_GRA;end
+    if isfield(opts,'STEP_SIZE');STEP_SIZE = opts.STEP_SIZE;end
 end
 
 % if quiet don't generate plots
@@ -56,14 +62,19 @@ g = grad_f(y,opts);
 theta = 1;
 
 % perturbation for first step-size estimate:
-T = 10; dx = T*ones(dim_x,1); g_hat = nan;
-while any(isnan(g_hat))
-    dx = dx/T;
-    x_hat = x + dx;
-    g_hat = grad_f(x_hat,opts);
+if isempty(STEP_SIZE)
+    T = 10; dx = T*ones(dim_x,1); g_hat = nan;
+    while any(isnan(g_hat))
+        dx = dx/T;
+        x_hat = x + dx;
+        g_hat = grad_f(x_hat,opts);
+    end
+    t = norm(x - x_hat)/norm(g - g_hat);
+else
+    t = STEP_SIZE;
 end
-t = norm(x - x_hat)/norm(g - g_hat);
- 
+
+
 for k=1:MAX_ITERS
     
     if (~QUIET && mod(k,100)==0)
