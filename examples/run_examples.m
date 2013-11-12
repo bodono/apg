@@ -1,5 +1,5 @@
 % this runs all the apg examples
-clear all; %close all
+clear all; close all
 addpath('..')
 
 %% set optional parameters:

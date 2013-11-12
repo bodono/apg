@@ -35,9 +35,12 @@ EPS = 1e-6; % tolerance for termination
 ALPHA = 1.05; % step-size growth factor
 BETA = 0.5; % step-size shrinkage factor
 QUIET = false; % if false writes out information every 100 iters
-GEN_PLOTS = true; % if true generates plots of proximal gradient
-USE_GRA = false; % if true uses unaccelerated proximal gradient descent
-STEP_SIZE = []; % starting step-size estimate, if not set apg makes estimate
+GEN_PLOTS = true; % if true generates plots of norm of proximal gradient
+USE_GRA = false; % if true uses UN-accelerated proximal gradient descent (typically slower)
+STEP_SIZE = []; % starting step-size estimate, if not set then apg makes initial guess
+FIXED_STEP_SIZE = false; % don't change step-size (forward or back tracking), uses initial
+                         % step-size throughout, only useful if good
+                         % STEP_SIZE set
 
 if (~isempty(opts))
     if isfield(opts,'X_INIT');X_INIT = opts.X_INIT;end
@@ -50,6 +53,7 @@ if (~isempty(opts))
     if isfield(opts,'GEN_PLOTS');GEN_PLOTS = opts.GEN_PLOTS;end
     if isfield(opts,'USE_GRA');USE_GRA = opts.USE_GRA;end
     if isfield(opts,'STEP_SIZE');STEP_SIZE = opts.STEP_SIZE;end
+    if isfield(opts,'FIXED_STEP_SIZE');FIXED_STEP_SIZE = opts.FIXED_STEP_SIZE;end
 end
 
 % if quiet don't generate plots
@@ -62,7 +66,7 @@ g = grad_f(y,opts);
 theta = 1;
 
 % perturbation for first step-size estimate:
-if isempty(STEP_SIZE)
+if (isempty(STEP_SIZE) || isnan(STEP_SIZE))
     T = 10; dx = T*ones(dim_x,1); g_hat = nan;
     while any(isnan(g_hat))
         dx = dx/T;
@@ -91,11 +95,11 @@ for k=1:MAX_ITERS
     end
     
     err1 = norm(y-x)/max(1,norm(x));
-    err2 = norm(x-x_old)/max(1,norm(x));
     
     if (GEN_PLOTS);
         errs(k,1) = err1;
-        errs(k,2) = err2;
+        %err2 = norm(x-x_old)/max(1,norm(x));
+        %errs(k,2) = err2;
     end
     
     if (err1 < EPS)
@@ -108,7 +112,7 @@ for k=1:MAX_ITERS
         theta = 1;
     end
     
-    if (USE_RESTART && (y_old-x)'*(x-x_old)>0)
+    if (USE_RESTART && (y-x)'*(x-x_old)>0)
         x = x_old;
         y = x;
         theta = 1;
@@ -120,8 +124,10 @@ for k=1:MAX_ITERS
     g = grad_f(y,opts);
     
     % TFOCS-style backtracking:
-    t_hat = 0.5*(norm(y-y_old)^2)/abs((y - y_old)'*(g_old - g));
-    t = min( ALPHA*t, max( BETA*t, t_hat ) );
+    if (~FIXED_STEP_SIZE)
+        t_hat = 0.5*(norm(y-y_old)^2)/abs((y - y_old)'*(g_old - g));
+        t = min( ALPHA*t, max( BETA*t, t_hat ));
+    end
     
 end
 if (~QUIET)
