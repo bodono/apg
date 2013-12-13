@@ -1,7 +1,7 @@
 function w = apg_log_reg(X_p, X_n, rho, opts)
 % uses apg to solve an L1-regularized logistic-regression problem
 %
-% min_w (sum_i( log(1 + exp(w'*x_i*y_i) ) + rho * norm(w,1))
+% min_w (sum_i( log(1 + exp(w'*x_i*y_i) ) / N + rho * norm(w,1))
 %
 % X_p is the matrix of positive instances (each column is one instance)
 % X_n is the matrix of negative instances

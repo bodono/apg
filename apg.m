@@ -32,7 +32,7 @@ X_INIT = zeros(dim_x,1); % initial starting point
 USE_RESTART = true; % use adaptive restart scheme
 MAX_ITERS = 2000; % maximum iterations before termination
 EPS = 1e-6; % tolerance for termination
-ALPHA = 1.05; % step-size growth factor
+ALPHA = 1.01; % step-size growth factor
 BETA = 0.5; % step-size shrinkage factor
 QUIET = false; % if false writes out information every 100 iters
 GEN_PLOTS = true; % if true generates plots of norm of proximal gradient
@@ -77,7 +77,6 @@ if (isempty(STEP_SIZE) || isnan(STEP_SIZE))
 else
     t = STEP_SIZE;
 end
-
 
 for k=1:MAX_ITERS
     
