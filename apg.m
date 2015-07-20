@@ -39,8 +39,8 @@ GEN_PLOTS = true; % if true generates plots of norm of proximal gradient
 USE_GRA = false; % if true uses UN-accelerated proximal gradient descent (typically slower)
 STEP_SIZE = []; % starting step-size estimate, if not set then apg makes initial guess
 FIXED_STEP_SIZE = false; % don't change step-size (forward or back tracking), uses initial
-                         % step-size throughout, only useful if good
-                         % STEP_SIZE set
+% step-size throughout, only useful if good
+% STEP_SIZE set
 
 if (~isempty(opts))
     if isfield(opts,'X_INIT');X_INIT = opts.X_INIT;end
@@ -65,15 +65,24 @@ x = X_INIT; y=x;
 g = grad_f(y,opts);
 theta = 1;
 
-% perturbation for first step-size estimate:
 if (isempty(STEP_SIZE) || isnan(STEP_SIZE))
-    T = 10; dx = T*ones(dim_x,1); g_hat = nan;
-    while any(isnan(g_hat))
-        dx = dx/T;
-        x_hat = x + dx;
+    if(false)
+        % perturbation for first step-size estimate:
+        T = 10; dx = T*ones(dim_x,1); g_hat = nan;
+        while any(isnan(g_hat))
+            dx = dx/T;
+            x_hat = x + dx;
+            g_hat = grad_f(x_hat,opts);
+        end
+        t = norm(x - x_hat)/norm(g - g_hat);
+    else
+        % Barzilai-Borwein step-size initialization:
+        t = 1 / norm(g);
+        x_hat = x - t*g;
         g_hat = grad_f(x_hat,opts);
+        t = abs(( x - x_hat )'*(g - g_hat) / (norm(g - g_hat)^2));
     end
-    t = norm(x - x_hat)/norm(g - g_hat);
+    clear x_hat g_hat
 else
     t = STEP_SIZE;
 end
