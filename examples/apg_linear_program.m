@@ -9,15 +9,15 @@ function x = apg_linear_program(A, b, c, opts)
     Q = sparse([zeros(n) A' c;
                 -A zeros(m,m) b;
                 -c' -b' 0]);
-    
+
     opts.Q = Q;
     opts.n = n;
     opts.m = m;
     if ~isfield(opts,'X_INIT');opts.X_INIT = 10 * rand(2 * size(Q,2),1);end
-    
+
     % uv = [x;y;tau;r;s;kap]
     uv = apg(@quad_grad, @proj_cone, 2 * size(Q,2), opts);
-    
+
     x = uv(1:n) / uv(n+m+1);
 end
 
