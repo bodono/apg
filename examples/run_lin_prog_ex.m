@@ -1,10 +1,11 @@
 %% generate and solve linear program example
 clear all; close all
+addpath('..')
 
 %%
 fprintf('running linear programming ex:\n');
 density = 0.25;
-n = 100; m = 300;
+n = 400; m = 1000;
 
 z = randn(m,1);
 y = max(z,0); % y = s - z;
