@@ -17,7 +17,7 @@ c = -A'*y;
 b = A*x + s;
 
 opts.EPS = 1e-7;
-opts.ALPHA = 1;
+opts.ALPHA = 1; % reduce forward tracking for stability
 opts.MAX_ITERS = 10000;
 
 x_lp = apg_linear_program(A, b, c, opts);
