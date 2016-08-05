@@ -16,8 +16,7 @@ function w = apg_log_reg(X_p, X_n, rho, opts)
 end
 
 function g = lr_grad(w, opts)
-    v = exp(w'*[opts.X_p, -opts.X_n])';
-    g = [opts.X_p, -opts.X_n]*(v./(1+v))/opts.N;
+    g = [opts.X_p, -opts.X_n]*(1./(1+exp(-w'*[opts.X_p, -opts.X_n])'))/opts.N;
 end
 
 function v = soft_thresh(w, t, opts)

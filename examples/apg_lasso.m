@@ -7,11 +7,14 @@ function x = apg_lasso(A, b, rho, opts)
     opts.A = A;
     opts.b = b;
     opts.rho = rho;
-    x = apg(@quad_grad, @soft_thresh, size(A,2), opts);
+    opts.dims = [size(A,2), size(b,2)];
+    x = apg(@quad_grad, @soft_thresh, prod(opts.dims), opts);
 end
 
 function g = quad_grad(x, opts)
-    g = opts.A'*(opts.A*x - opts.b);
+    x_t = reshape(x, opts.dims);
+    g = opts.A'*(opts.A*x_t - opts.b);
+    g = g(:);
 end
 
 function v = soft_thresh(x, t, opts)

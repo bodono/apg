@@ -29,7 +29,6 @@ X_p = 5*randn(d,n)+x_p*ones(1,n); X_n = 5*randn(d,n)+x_n*ones(1,n);
 x_lr = apg_log_reg(X_p,X_n,rho,opts);
 title('L1 regularized logistic regression')
 
-
 %% noisy low-rank matrix completion
 fprintf('running noisy low-rank matrix completion ex:\n');
 n = 100; m = 50; r = 10; density = 0.2; rho = 5;
